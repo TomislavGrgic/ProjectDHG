@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "TM4C123GH6PM.h": "c",
+        "stdint.h": "c",
+        "core_cm4.h": "c",
+        "cmsis_gcc.h": "c",
+        "tm4c123.h": "c",
+        "tm4c_gpio.h": "c",
+        "gpio.h": "c",
+        "gpio_port.h": "c",
+        "gpio_types.h": "c",
+        "tm4c_qei.h": "c",
+        "tm4c_pwm.h": "c",
+        "pwm_types.h": "c",
+        "pwm.h": "c",
+        "pwm_port.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": true
+}
