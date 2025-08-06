@@ -13,7 +13,10 @@
         "tm4c_pwm.h": "c",
         "pwm_types.h": "c",
         "pwm.h": "c",
-        "pwm_port.h": "c"
+        "pwm_port.h": "c",
+        "encoder_types.h": "c",
+        "encoder_port.h": "c",
+        "encoder.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }

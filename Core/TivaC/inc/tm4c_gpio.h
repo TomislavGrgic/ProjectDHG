@@ -36,5 +36,6 @@ typedef enum {
 void tm4c_gpio_mode(uint8_t port, uint8_t pin, uint8_t mode);
 void tm4c_gpio_read(uint8_t port, uint8_t pin, uint8_t* output);
 void tm4c_gpio_write(uint8_t port, uint8_t pin, uint8_t input);
+void tm4c_gpio_pull(uint8_t port, uint8_t pin, uint8_t mode);
 
 #endif /*__TM4C_GPIO_DRIVER__*/

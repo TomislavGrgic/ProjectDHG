@@ -13,6 +13,14 @@ void pwm_port_tm4c_init(void *self);
 void pwm_port_tm4c_set_period(void *self, uint32_t value);
 void pwm_port_tm4c_set_duty(void *self, uint32_t value);
 
+void pwm_port_tm4c_ch2_init(void *self);
+void pwm_port_tm4c_ch2_set_period(void *self, uint32_t value);
+void pwm_port_tm4c_ch2_set_duty(void *self, uint32_t value);
+
+void pwm_port_tm4c_ch4_init(void *self);
+void pwm_port_tm4c_ch4_set_period(void *self, uint32_t value);
+void pwm_port_tm4c_ch4_set_duty(void *self, uint32_t value);
+
 #ifdef __cplusplus
 }
 #endif

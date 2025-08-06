@@ -17,6 +17,7 @@
             "type": "cortex-debug",
             "runToEntryPoint": "main",
             "openOCDPath": "./OpenOCD/openocd.exe",
+            "svdFile": "./Core/TivaC/TM4C123GH6PM.svd",
             "servertype": "openocd",
             "device": "TM4C123GH6PM",
             "configFiles": [

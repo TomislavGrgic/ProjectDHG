@@ -29,3 +29,11 @@ void gpio_port_write(void *self, int pin, int mode) {
     const uint8_t ll_pin = GPIO_GET_PIN(pin);
     tm4c_gpio_write(ll_port, ll_pin, mode);
 }
+
+
+void gpio_port_pull_mode(void *self, int pin, int mode) {
+    (void)self; 
+    const uint8_t ll_port = GPIO_GET_PORT(pin);
+    const uint8_t ll_pin = GPIO_GET_PIN(pin);
+    tm4c_gpio_pull(ll_port, ll_pin, mode);
+}

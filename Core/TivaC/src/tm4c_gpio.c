@@ -31,7 +31,7 @@ void tm4c_gpio_read(uint8_t port, uint8_t pin, uint8_t* output) {
         return;
     }
 
-    *output = ports[port]->DATA & pin;
+    *output = ports[port]->DATA & TM4C_GPIO_PIN_BIT(pin);
     *output = !!(*output);
 }
 
@@ -49,6 +49,26 @@ void tm4c_gpio_write(uint8_t port, uint8_t pin, uint8_t input) {
         ports[port]->DATA &= ~TM4C_GPIO_PIN_BIT(pin);
     } else {
         ports[port]->DATA |= TM4C_GPIO_PIN_BIT(pin);
+    }
+}
+
+
+void tm4c_gpio_pull(uint8_t port, uint8_t pin, uint8_t mode) {
+    if(port >= TM4C_PORT_MAX) {
+        return;
+    }
+
+    if(pin >= TM4C_PIN_MAX) {
+        return;
+    }
+
+    ports[port]->PUR &= ~TM4C_GPIO_PIN_BIT(pin);
+    ports[port]->PDR &= ~TM4C_GPIO_PIN_BIT(pin);
+
+    if(mode) {
+        ports[port]->PUR |= TM4C_GPIO_PIN_BIT(pin);
+    } else {
+        ports[port]->PDR |= TM4C_GPIO_PIN_BIT(pin);
     }
 }
 

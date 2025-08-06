@@ -7,7 +7,8 @@ static GPIO_Object_S GPIO_object = {
         .self = (void*)&GPIO_object,
         .pin_mode = gpio_port_pin_mode,
         .read = gpio_port_read,
-        .write = gpio_port_write
+        .write = gpio_port_write,
+        .pull_mode = gpio_port_pull_mode
     },
 
     ._private = {
@@ -27,4 +28,8 @@ inline void gpio_write(GPIO_S* object, int pin, int state) {
 
 inline int gpio_read(GPIO_S* object, int pin) {
     return object->read(object->self, pin);
+}
+
+inline int gpio_pull_mode(GPIO_S* object, int pin, int mode) {
+    object->pull_mode(object->self, pin, mode);
 }

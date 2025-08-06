@@ -22,6 +22,8 @@ typedef struct{
 } PWM_S;
 
 extern PWM_S *PWM;
+extern PWM_S *PWM2;
+extern PWM_S *PWM4;
 
 void pwm_init(PWM_S *object);
 void pwm_set_period(PWM_S *object, uint16_t period);
