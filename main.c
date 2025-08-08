@@ -4,6 +4,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "encoder.h"
+#include "systick.h"
 
 #define RGB_BLUE_PIN    42
 #define MAX_FREQ        250000
@@ -61,6 +62,8 @@
 #define PF1 41
 #define PF4 44
 
+#define NUM_OF_STRINGS  3
+
 
 typedef struct {
    uint8_t pin;
@@ -83,14 +86,14 @@ void fake_delay(int32_t delay) {
    for(volatile int i = 0; i < delay; i++);
 }
 
-int play_notes(Key_S keys[], size_t size) {
+int play_notes(Key_S keys[], size_t size, uint32_t default_note) {
    if(keys == NULL) return 0;
    for(int i = 0; i < size; i++) {
       if( !gpio_read(GPIO, keys[i].pin) ) {
          return keys[i].note;
       }
    }
-   return 0;
+   return default_note;
 }
 
 void init_pins(void) {
@@ -105,12 +108,16 @@ void init_pins(void) {
 }
 
 void main(void) { 
+   systick_init();
    init_pins();
+   
+   PWM_S *strings[NUM_OF_STRINGS] = {
+      PWM, PWM2, PWM4
+   };
 
-   pwm_init(PWM);
-   pwm_init(PWM2);
-   pwm_init(PWM4);
-
+   for(int i = 0; i < NUM_OF_STRINGS; i++) {
+      pwm_init(strings[i]);
+   }
    
    Key_S first_melody [] = {
       {.pin = PA7, .note = G5},
@@ -132,26 +139,26 @@ void main(void) {
       {.pin = PE1, .note = A3},
    };
 
+   while (1) { 
+      int melodies[NUM_OF_STRINGS] = {
+         play_notes(first_melody, sizeof(first_melody)/sizeof(Key_S), G4),
+         play_notes(second_melody, sizeof(second_melody)/sizeof(Key_S), G3),
+         G2
+      };
 
-   while (1)
-   { 
+      for(int i = 0; i < NUM_OF_STRINGS; i++) {
+         pwm_set_period(strings[i], melodies[i]);
+         pwm_set_duty(strings[i], melodies[i]>>2);
+      }
 
-      int fairst_melody_period = play_notes(first_melody, sizeof(first_melody)/sizeof(Key_S));
-      if(!fairst_melody_period) fairst_melody_period = G4;
+      systick_sleep_ms(1000);
 
-      int second_melody_period = play_notes(second_melody, sizeof(second_melody)/sizeof(Key_S));
-      if(!second_melody_period) second_melody_period = G3;
-
-      pwm_set_period(PWM, fairst_melody_period);
-      pwm_set_duty(PWM, fairst_melody_period>>2);
-
-      pwm_set_period(PWM2, second_melody_period);
-      pwm_set_duty(PWM2, second_melody_period>>1);
-
-      pwm_set_period(PWM4, G2);
-      pwm_set_duty(PWM4, G2>>3);
-
-      fake_delay(1000);
+      for(int i = 0; i < NUM_OF_STRINGS; i++) {
+         pwm_set_period(strings[i], 0);
+         pwm_set_duty(strings[i], 0);
+      }
+      
+      systick_sleep_ms(1000);
    }
  }
 

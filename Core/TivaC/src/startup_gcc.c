@@ -33,6 +33,7 @@
 //
 //*****************************************************************************
 void ResetISR(void);
+void SysTick_ISR_Handler(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
@@ -76,7 +77,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    SysTick_ISR_Handler,                      // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
@@ -290,6 +291,10 @@ ResetISR(void)
     // Call the application's entry point.
     //
     main();
+}
+
+__attribute((weak)) void SysTick_ISR_Handler(void) {
+    IntDefaultHandler();
 }
 
 //*****************************************************************************
