@@ -4,7 +4,7 @@
 #include "gpio.h"
 #include "pwm.h"
 #include "encoder.h"
-#include "systick.h"
+#include "tm4c_systick.h"
 
 #define RGB_BLUE_PIN    42
 #define MAX_FREQ        250000

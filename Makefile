@@ -19,13 +19,12 @@ SOURCE_FILES = 	main.c\
 				pwm_port.c\
 				encoder.c\
 				encoder_port.c\
-				systick.c
+				tm4c_systick.c
 				
 OBJECT_FILES = $(SOURCE_FILES:.c=.o)
 OBJECT_FILES_PTH = $(addprefix $(OBJS_PATH)/, $(SOURCE_FILES:.c=.o))
 
 vpath %.c Core/TivaC/src
-vpath %.c Core/Cortex/src
 vpath %.c Drivers/src/gpio
 vpath %.c Drivers/src/pwm
 vpath %.c Drivers/src/encoder
@@ -37,7 +36,6 @@ HEDAER_FILES = -ICore/CMSIS/inc\
 			-IDrivers/inc/gpio\
 			-IDrivers/inc/pwm\
 			-IDrivers/inc/encoder\
-			-ICore/Cortex/inc\
 
 PROCESSOR_FLAGS = -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb
 

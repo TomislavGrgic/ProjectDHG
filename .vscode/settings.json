@@ -16,7 +16,8 @@
         "pwm_port.h": "c",
         "encoder_types.h": "c",
         "encoder_port.h": "c",
-        "encoder.h": "c"
+        "encoder.h": "c",
+        "tm4c_systick.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }
