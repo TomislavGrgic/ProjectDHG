@@ -5,6 +5,7 @@
 #include "pwm.h"
 #include "encoder.h"
 #include "tm4c_systick.h"
+#include "adc.h"
 
 #define RGB_BLUE_PIN    42
 #define MAX_FREQ        250000
@@ -52,6 +53,7 @@
 #define As5 NOTE_FORMULA(932.33)
 #define B5  NOTE_FORMULA(987.77)
 
+#define PA1 1
 #define PA7 7
 #define PE1 33
 #define PE2 34
@@ -66,9 +68,11 @@
 
 
 typedef struct {
-   uint8_t pin;
-   uint32_t note;
-}Key_S;
+   uint8_t *pin;
+   uint32_t *note;
+   uint32_t default_note;
+   size_t size;
+}Keys_S;
 
 int32_t seed = 141351;
 
@@ -82,34 +86,34 @@ int32_t note_offset(int max, int offset) {
    return (pseudo_rand()%max) - offset;
 }
 
-void fake_delay(int32_t delay) {
-   for(volatile int i = 0; i < delay; i++);
-}
 
-int play_notes(Key_S keys[], size_t size, uint32_t default_note) {
+int play_notes(Keys_S *keys) {
    if(keys == NULL) return 0;
-   for(int i = 0; i < size; i++) {
-      if( !gpio_read(GPIO, keys[i].pin) ) {
-         return keys[i].note;
+   for(int i = 0; i < keys->size; i++) {
+      if( !gpio_read(GPIO, keys->pin[i]) ) {
+         return keys->note[i];
       }
    }
-   return default_note;
+   return keys->default_note;
 }
 
-void init_pins(void) {
-   uint8_t pins[] = {
-      PE1, PE2, PD1, PD2, PD3, PE3, PA7
-   };
-
-   for(int i = 0; i < sizeof(pins)/sizeof(uint8_t); i++) {
+void init_pins(uint8_t *pins, size_t size) {
+   for(int i = 0; i < size; i++) {
       gpio_mode(GPIO, pins[i], INPUT);
       gpio_pull_mode(GPIO, pins[i], PULL_UP);
    }
 }
 
-void main(void) { 
+void main(void) {    
+   uint8_t pins[] = { PA7, PE3, PE2, PD1, PD2, PD3, PE1 };
+   uint32_t first_notes[] = { G5, F5, E5, D5, C5, B4, A4 };
+   uint32_t second_notes[] = { G4, F4, E4, D4, C4, B3, A3 };
+
    systick_init();
-   init_pins();
+   adc_init(ADC);
+   adc_activate_channel(ADC, 1);
+   adc_activate_channel(ADC, 2);
+   init_pins(pins, sizeof(pins)/sizeof(uint8_t));
    
    PWM_S *strings[NUM_OF_STRINGS] = {
       PWM, PWM2, PWM4
@@ -118,31 +122,25 @@ void main(void) {
    for(int i = 0; i < NUM_OF_STRINGS; i++) {
       pwm_init(strings[i]);
    }
-   
-   Key_S first_melody [] = {
-      {.pin = PA7, .note = G5},
-      {.pin = PE3, .note = F5},
-      {.pin = PE2, .note = E5},
-      {.pin = PD1, .note = D5},
-      {.pin = PD2, .note = C5},
-      {.pin = PD3, .note = B4},
-      {.pin = PE1, .note = A4},
+
+   Keys_S first_melody = {
+      .pin = pins,
+      .note = first_notes,
+      .default_note = G4,
+      .size = sizeof(pins) / sizeof(uint8_t)
    };
 
-   Key_S second_melody [] = {
-      {.pin = PA7, .note = G4},
-      {.pin = PE3, .note = F4},
-      {.pin = PE2, .note = E4},
-      {.pin = PD1, .note = D4},
-      {.pin = PD2, .note = C4},
-      {.pin = PD3, .note = B3},
-      {.pin = PE1, .note = A3},
+   Keys_S second_melody = {
+      .pin = pins,
+      .note = second_notes,
+      .default_note = G3,
+      .size = sizeof(pins) / sizeof(uint8_t)
    };
 
    while (1) { 
       int melodies[NUM_OF_STRINGS] = {
-         play_notes(first_melody, sizeof(first_melody)/sizeof(Key_S), G4),
-         play_notes(second_melody, sizeof(second_melody)/sizeof(Key_S), G3),
+         play_notes(&first_melody),
+         play_notes(&second_melody),
          G2
       };
 
@@ -151,14 +149,13 @@ void main(void) {
          pwm_set_duty(strings[i], melodies[i]>>2);
       }
 
-      systick_sleep_ms(1000);
+      volatile int aaa = adc_read(ADC, 1);
+      volatile int bbb = aaa;
+      systick_sleep_ms(10);
 
-      for(int i = 0; i < NUM_OF_STRINGS; i++) {
-         pwm_set_period(strings[i], 0);
-         pwm_set_duty(strings[i], 0);
-      }
-      
-      systick_sleep_ms(1000);
+      volatile int aaa1 = adc_read(ADC, 2);
+      volatile int bbb1 = aaa1;
+      systick_sleep_ms(10);
    }
  }
 

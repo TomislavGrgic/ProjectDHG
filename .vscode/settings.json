@@ -17,7 +17,12 @@
         "encoder_types.h": "c",
         "encoder_port.h": "c",
         "encoder.h": "c",
-        "tm4c_systick.h": "c"
+        "tm4c_systick.h": "c",
+        "tm4c_adc.h": "c",
+        "common_erorrs.h": "c",
+        "adc_port.h": "c",
+        "common_object.h": "c",
+        "adc.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }
